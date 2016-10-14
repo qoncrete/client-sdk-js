@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<title>Qoncrete js client sdk</title>
+<script src="qoncrete.min.js"></script>
+<script>
+  var qsdk = new Qoncrete({
+    sourceID: 'SOURCE_ID',
+    apiToken: 'API_TOKEN'
+  });
+
+  qsdk.send({ "user": "name", "action": "purchase", "price": 99.99 })
+  .onError(function(error) {
+    console.log('Error, error code:', error.code, 'details:', error.message);
+  })
+  .onSuccess(function() {
+    console.log('success');
+  })
+  .done();
+
+  qsdk.send(
+    { "user": "name", "action": "purchase", "price": 99.99 },
+    null,
+    function(error) {
+        if (error)
+          return console.log('Error, error code:', error.code, 'details:', error.message);
+        console.log('success');
+    }
+  );
+
+  qsdk.send(
+    { "user": "name", "action": "purchase", "price": 99.99 },
+    { retryOnTimeout: 2, timeoutAfter: 3000 },
+    function(error) {
+        if (error)
+          return console.log('Error, error code:', error.code, 'details:', error.message);
+        console.log('success');
+    }
+  );
+</script>
