@@ -3,10 +3,11 @@
     if (global.Qoncrete)
         throw new Error('`Qoncrete` is already defined in the global namespace!');
 
-    var baseEndpoint = 'https://log.qoncrete.com';
+    var baseEndpoint = '//log.qoncrete.com';
 
     var sourceID = null;
     var apiToken = null;
+    var scheme = '';
     var sendLogEndpoint = null;
 
     var TIME = { SECOND: 1000 };
@@ -26,12 +27,17 @@
     // opts: {
     //   sourceID: UUID string
     //   apiToken: UUID string
+    //   secureTransport: Bool or String.
     // }
     function Qoncrete(opts) {
         opts = validateQoncrete(opts);
         sourceID = opts.sourceID;
         apiToken = opts.apiToken;
-        sendLogEndpoint = baseEndpoint + '/' + sourceID + '?token=' + apiToken;
+        if (opts.secureTransport === 'true')
+            scheme = 'https:';
+        else if (opts.secureTransport === 'false')
+            scheme = 'http:';
+        sendLogEndpoint = scheme + baseEndpoint + '/' + sourceID + '?token=' + apiToken;
     }
 
     function validateQoncrete(opts) {
@@ -42,7 +48,9 @@
         opts.apiToken = opts.apiToken.toLowerCase();
         if (!(isUUID(opts.sourceID) && isUUID(opts.apiToken)))
             throw new QoncreteError(ERRORS.CLIENT_ERROR, '`sourceID` and `apiToken` must be valid UUIDs.');
-
+        opts.secureTransport = '' + opts.secureTransport || 'auto';
+        if (!~['false', 'true', 'auto'].indexOf(opts.secureTransport))
+            throw new QoncreteError(ERRORS.CLIENT_ERROR, 'Unrecognized value for secureTransport. It must be false, true or auto.');
         return opts;
     }
 
@@ -130,9 +138,12 @@
     }
 
     function QoncreteError(code, message) {
+        var stack = new Error().stack;
+        var at = (stack && stack.match(/[^\s]+$/)) || '';
+
         this.code = code;
         this.message = message;
-        this.stack = this.name + ' at ' + new Error().stack.match(/[^\s]+$/);
+        this.stack = this.name + ' at ' + at;
     }
 
     Object.setPrototypeOf(QoncreteError, Error);

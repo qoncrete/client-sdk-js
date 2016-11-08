@@ -4,7 +4,8 @@
 <script>
   var qsdk = new Qoncrete({
     sourceID: 'SOURCE_ID',
-    apiToken: 'API_TOKEN'
+    apiToken: 'API_TOKEN',
+    secureTransport: false // Send trough HTTPS. Can be: true | false | 'auto'. Default: 'auto'
   });
 
   qsdk.send({ "user": "name", "action": "purchase", "price": 99.99 })
