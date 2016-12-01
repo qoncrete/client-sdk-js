@@ -1,12 +1,12 @@
 {
   "name": "qoncrete-client-sdk-js",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Qoncrete Client SDK for browser javascript.",
   "main": "qoncrete.js",
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "qoncrete@goyoo.com",
   "license": "MIT"
 }
